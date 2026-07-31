@@ -1,0 +1,66 @@
+.app {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 0 16px;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.score-board {
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.quiz-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.english-word {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.choice-button {
+  font-size: 18px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.choice-button:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.choice-button:disabled {
+  cursor: default;
+}
+
+.feedback {
+  margin-top: 16px;
+  font-weight: bold;
+}
+
+.next-button {
+  margin-top: 20px;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: white;
+  cursor: pointer;
+}
+
+.next-button:hover {
+  background: #256428;
+}
