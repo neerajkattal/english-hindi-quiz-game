@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import QuizCard from "./components/QuizCard";
 import ScoreBoard from "./components/ScoreBoard";
+import SetupScreen from "./components/SetupScreen";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
 
 function App() {
+  // "setup" -> choosing how many questions, "playing" -> answering them
+  const [stage, setStage] = useState("setup");
+  const [questionCount, setQuestionCount] = useState(10);
   const [question, setQuestion] = useState(null);
   const [score, setScore] = useState(0);
   const [total, setTotal] = useState(0);
@@ -20,10 +24,14 @@ function App() {
       .then((data) => setQuestion(data));
   };
 
-  // Load the first question when the app starts.
-  useEffect(() => {
+  // Start a new quiz session with the chosen number of questions.
+  const startQuiz = (count) => {
+    setQuestionCount(count);
+    setScore(0);
+    setTotal(0);
+    setStage("playing");
     loadQuestion();
-  }, []);
+  };
 
   // Send the player's choice to the backend and show if it was right.
   const handleAnswer = (selectedHindi) => {
@@ -50,14 +58,21 @@ function App() {
   return (
     <div className="app">
       <h1>English → Hindi Quiz</h1>
-      <ScoreBoard score={score} total={total} />
-      {question && (
-        <QuizCard question={question} onAnswer={handleAnswer} feedback={feedback} />
-      )}
-      {feedback && (
-        <button className="next-button" onClick={loadQuestion}>
-          Next word
-        </button>
+
+      {stage === "setup" && <SetupScreen onStart={startQuiz} />}
+
+      {stage === "playing" && (
+        <>
+          <ScoreBoard score={score} total={total} />
+          {question && (
+            <QuizCard question={question} onAnswer={handleAnswer} feedback={feedback} />
+          )}
+          {feedback && (
+            <button className="next-button" onClick={loadQuestion}>
+              Next word
+            </button>
+          )}
+        </>
       )}
     </div>
   );
