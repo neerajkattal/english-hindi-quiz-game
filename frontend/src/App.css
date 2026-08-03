@@ -64,3 +64,84 @@
 .next-button:hover {
   background: #256428;
 }
+
+.setup-screen {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.question-count-options {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.count-button {
+  font-size: 16px;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.count-button.selected {
+  background: #2e7d32;
+  color: white;
+  border-color: #2e7d32;
+}
+
+.start-button {
+  margin-top: 8px;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: white;
+  cursor: pointer;
+}
+
+.start-button:hover {
+  background: #256428;
+}
+
+.results-screen {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: left;
+}
+
+.final-score {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+}
+
+.results-list {
+  list-style: none;
+  padding: 0;
+}
+
+.results-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.result-correct {
+  background: #e8f5e9;
+}
+
+.result-wrong {
+  background: #ffebee;
+}
+
+.result-word {
+  font-weight: bold;
+}
