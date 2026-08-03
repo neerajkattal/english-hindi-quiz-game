@@ -17,6 +17,7 @@ function App() {
   const [score, setScore] = useState(0);
   const [history, setHistory] = useState([]);
   const [feedback, setFeedback] = useState(null);
+  const [bwMode, setBwMode] = useState(false);
 
   // Ask the backend for a new question.
   const loadQuestion = () => {
@@ -75,7 +76,12 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className={`app ${bwMode ? "bw" : ""}`}>
+      <div className="theme-toggle">
+        <button onClick={() => setBwMode((prevBwMode) => !prevBwMode)}>
+          {bwMode ? "Color Mode" : "Black & White Mode"}
+        </button>
+      </div>
       <h1>English → Hindi Quiz</h1>
 
       {stage === "setup" && <SetupScreen onStart={startQuiz} />}
