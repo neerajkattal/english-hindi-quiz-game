@@ -3,17 +3,19 @@ import React, { useState } from "react";
 import QuizCard from "./components/QuizCard";
 import ScoreBoard from "./components/ScoreBoard";
 import SetupScreen from "./components/SetupScreen";
+import ResultsScreen from "./components/ResultsScreen";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
 
 function App() {
-  // "setup" -> choosing how many questions, "playing" -> answering them
+  // "setup" -> choosing how many questions, "playing" -> answering them,
+  // "results" -> final score screen
   const [stage, setStage] = useState("setup");
   const [questionCount, setQuestionCount] = useState(10);
   const [question, setQuestion] = useState(null);
   const [score, setScore] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [history, setHistory] = useState([]);
   const [feedback, setFeedback] = useState(null);
 
   // Ask the backend for a new question.
@@ -28,12 +30,12 @@ function App() {
   const startQuiz = (count) => {
     setQuestionCount(count);
     setScore(0);
-    setTotal(0);
+    setHistory([]);
     setStage("playing");
     loadQuestion();
   };
 
-  // Send the player's choice to the backend and show if it was right.
+  // Send the player's choice to the backend, record the result, and show if it was right.
   const handleAnswer = (selectedHindi) => {
     fetch(`${API_URL}/quiz/answer`, {
       method: "POST",
@@ -45,7 +47,15 @@ function App() {
     })
       .then((res) => res.json())
       .then((result) => {
-        setTotal((prevTotal) => prevTotal + 1);
+        setHistory((prevHistory) => [
+          ...prevHistory,
+          {
+            english_word: question.english_word,
+            selected_hindi: selectedHindi,
+            correct_hindi: result.correct_hindi,
+            correct: result.correct,
+          },
+        ]);
         if (result.correct) {
           setScore((prevScore) => prevScore + 1);
           setFeedback("Correct!");
@@ -53,6 +63,15 @@ function App() {
           setFeedback(`Wrong. The correct answer was ${result.correct_hindi}`);
         }
       });
+  };
+
+  // Move to the next question, or show the results screen if this was the last one.
+  const handleNext = () => {
+    if (history.length >= questionCount) {
+      setStage("results");
+    } else {
+      loadQuestion();
+    }
   };
 
   return (
@@ -63,16 +82,20 @@ function App() {
 
       {stage === "playing" && (
         <>
-          <ScoreBoard score={score} total={total} />
+          <ScoreBoard score={score} total={history.length} />
           {question && (
             <QuizCard question={question} onAnswer={handleAnswer} feedback={feedback} />
           )}
           {feedback && (
-            <button className="next-button" onClick={loadQuestion}>
-              Next word
+            <button className="next-button" onClick={handleNext}>
+              {history.length >= questionCount ? "See Results" : "Next word"}
             </button>
           )}
         </>
+      )}
+
+      {stage === "results" && (
+        <ResultsScreen history={history} onRestart={() => setStage("setup")} />
       )}
     </div>
   );
