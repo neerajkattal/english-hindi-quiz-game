@@ -145,3 +145,68 @@
 .result-word {
   font-weight: bold;
 }
+
+.theme-toggle {
+  text-align: right;
+  margin-bottom: 12px;
+}
+
+.theme-toggle button {
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+/* Black & White theme: swaps the greens/reds for plain black, white, and gray. */
+.app.bw h1,
+.app.bw .final-score,
+.app.bw .result-word {
+  color: #000;
+}
+
+.app.bw .quiz-card,
+.app.bw .setup-screen,
+.app.bw .results-screen {
+  border-color: #000;
+}
+
+.app.bw .choice-button,
+.app.bw .count-button,
+.app.bw .theme-toggle button {
+  background: #fff;
+  border: 2px solid #000;
+  color: #000;
+}
+
+.app.bw .choice-button:hover:not(:disabled),
+.app.bw .count-button:hover {
+  background: #000;
+  color: #fff;
+}
+
+.app.bw .count-button.selected {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.app.bw .start-button,
+.app.bw .next-button {
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+}
+
+.app.bw .start-button:hover,
+.app.bw .next-button:hover {
+  background: #333;
+}
+
+.app.bw .result-correct,
+.app.bw .result-wrong {
+  background: #fff;
+  border: 1px solid #000;
+}
