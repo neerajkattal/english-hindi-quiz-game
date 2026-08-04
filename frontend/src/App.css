@@ -28,7 +28,13 @@
   gap: 12px;
 }
 
+.choice-row {
+  display: flex;
+  gap: 6px;
+}
+
 .choice-button {
+  flex: 1;
   font-size: 18px;
   padding: 12px;
   border: 1px solid #ccc;
@@ -45,9 +51,26 @@
   cursor: default;
 }
 
+.speak-button {
+  font-size: 16px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.speak-button:hover {
+  background: #f0f0f0;
+}
+
 .feedback {
   margin-top: 16px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .next-button {
@@ -146,6 +169,12 @@
   font-weight: bold;
 }
 
+.result-answer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .theme-toggle {
   text-align: right;
   margin-bottom: 12px;
@@ -175,7 +204,8 @@
 
 .app.bw .choice-button,
 .app.bw .count-button,
-.app.bw .theme-toggle button {
+.app.bw .theme-toggle button,
+.app.bw .speak-button {
   background: #fff;
   border: 2px solid #000;
   color: #000;
