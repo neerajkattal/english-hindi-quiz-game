@@ -17,11 +17,13 @@ function App() {
   const [score, setScore] = useState(0);
   const [history, setHistory] = useState([]);
   const [feedback, setFeedback] = useState(null);
+  const [correctHindi, setCorrectHindi] = useState(null);
   const [bwMode, setBwMode] = useState(false);
 
   // Ask the backend for a new question.
   const loadQuestion = () => {
     setFeedback(null);
+    setCorrectHindi(null);
     fetch(`${API_URL}/quiz/question`)
       .then((res) => res.json())
       .then((data) => setQuestion(data));
@@ -57,6 +59,7 @@ function App() {
             correct: result.correct,
           },
         ]);
+        setCorrectHindi(result.correct_hindi);
         if (result.correct) {
           setScore((prevScore) => prevScore + 1);
           setFeedback("Correct!");
@@ -90,7 +93,12 @@ function App() {
         <>
           <ScoreBoard score={score} total={history.length} />
           {question && (
-            <QuizCard question={question} onAnswer={handleAnswer} feedback={feedback} />
+            <QuizCard
+              question={question}
+              onAnswer={handleAnswer}
+              feedback={feedback}
+              correctHindi={correctHindi}
+            />
           )}
           {feedback && (
             <button className="next-button" onClick={handleNext}>
