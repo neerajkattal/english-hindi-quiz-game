@@ -1,7 +1,10 @@
 import React from "react";
 
+import { speakHindi } from "../utils/speech";
+
 // Shows the final score and a breakdown of every question in the session,
-// marking each one correct or wrong.
+// marking each one correct or wrong. A speaker button on each row lets the
+// player re-listen to the correct pronunciation while reviewing.
 function ResultsScreen({ history, onRestart }) {
   const correctCount = history.filter((item) => item.correct).length;
 
@@ -20,6 +23,13 @@ function ResultsScreen({ history, onRestart }) {
             <span className="result-word">{item.english_word}</span>
             <span className="result-answer">
               Your answer: {item.selected_hindi} {item.correct ? "✓" : "✗"}
+              <button
+                className="speak-button"
+                onClick={() => speakHindi(item.correct_hindi)}
+                aria-label={`Hear how ${item.correct_hindi} is pronounced`}
+              >
+                🔊
+              </button>
             </span>
             {!item.correct && (
               <span className="result-correct-answer">
