@@ -8,6 +8,8 @@ export function speakHindi(text) {
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "hi-IN";
+  // Slower than the default (1) so beginners have time to catch the sound.
+  utterance.rate = 0.7;
 
   // Stop whatever word is currently playing before starting the new one.
   window.speechSynthesis.cancel();
