@@ -4,14 +4,16 @@ import QuizCard from "./components/QuizCard";
 import ScoreBoard from "./components/ScoreBoard";
 import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
+import CategoryScreen from "./components/CategoryScreen";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
 
 function App() {
-  // "setup" -> choosing how many questions, "playing" -> answering them,
-  // "results" -> final score screen
-  const [stage, setStage] = useState("setup");
+  // "category" -> choosing a topic, "setup" -> choosing how many questions,
+  // "playing" -> answering them, "results" -> final score screen
+  const [stage, setStage] = useState("category");
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [questionCount, setQuestionCount] = useState(10);
   const [question, setQuestion] = useState(null);
   const [score, setScore] = useState(0);
@@ -20,13 +22,22 @@ function App() {
   const [correctHindi, setCorrectHindi] = useState(null);
   const [bwMode, setBwMode] = useState(false);
 
-  // Ask the backend for a new question.
+  // Ask the backend for a new question, limited to the chosen category if any.
   const loadQuestion = () => {
     setFeedback(null);
     setCorrectHindi(null);
-    fetch(`${API_URL}/quiz/question`)
+    const url = selectedCategory
+      ? `${API_URL}/quiz/question?category=${encodeURIComponent(selectedCategory)}`
+      : `${API_URL}/quiz/question`;
+    fetch(url)
       .then((res) => res.json())
       .then((data) => setQuestion(data));
+  };
+
+  // Remember the chosen topic and move on to picking a question count.
+  const selectCategory = (category) => {
+    setSelectedCategory(category);
+    setStage("setup");
   };
 
   // Start a new quiz session with the chosen number of questions.
@@ -87,6 +98,8 @@ function App() {
       </div>
       <h1>English → Hindi Quiz</h1>
 
+      {stage === "category" && <CategoryScreen onSelect={selectCategory} />}
+
       {stage === "setup" && <SetupScreen onStart={startQuiz} />}
 
       {stage === "playing" && (
@@ -109,7 +122,7 @@ function App() {
       )}
 
       {stage === "results" && (
-        <ResultsScreen history={history} onRestart={() => setStage("setup")} />
+        <ResultsScreen history={history} onRestart={() => setStage("category")} />
       )}
     </div>
   );
