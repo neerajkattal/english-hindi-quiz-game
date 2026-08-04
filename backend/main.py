@@ -1,16 +1,19 @@
 """
 FastAPI app entry point for the English to Hindi quiz game.
 
-Exposes two quiz endpoints on top of the health-check route:
-  - GET  /quiz/question  -> a new random question
+Exposes quiz endpoints on top of the health-check route:
+  - GET  /categories     -> the list of word categories
+  - GET  /quiz/question  -> a new random question, optionally filtered by category
   - POST /quiz/answer    -> check a submitted answer
 """
 
-from fastapi import FastAPI
+from typing import List, Optional
+
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from models import AnswerRequest, AnswerResponse, Question
-from quiz import build_question, check_answer
+from quiz import build_question, check_answer, get_categories
 
 app = FastAPI(title="English to Hindi Quiz Game")
 
@@ -29,10 +32,16 @@ def root():
     return {"message": "English to Hindi Quiz Game API is running"}
 
 
+@app.get("/categories", response_model=List[str])
+def list_categories():
+    """Return the list of available word categories."""
+    return get_categories()
+
+
 @app.get("/quiz/question", response_model=Question)
-def get_question():
-    """Return a new random quiz question with 4 Hindi answer choices."""
-    return build_question()
+def get_question(category: Optional[str] = Query(default=None)):
+    """Return a new random quiz question, optionally limited to one category."""
+    return build_question(category)
 
 
 @app.post("/quiz/answer", response_model=AnswerResponse)
