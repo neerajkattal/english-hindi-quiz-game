@@ -1,11 +1,17 @@
 import React from "react";
 
-// Shows how many questions were answered correctly out of the total.
-function ScoreBoard({ score, total }) {
+// Shows which question the player is on and how many they've answered
+// correctly out of the total so far.
+function ScoreBoard({ current, questionCount, score, total }) {
   return (
-    <p className="score-board">
-      Score: {score} / {total}
-    </p>
+    <div className="score-board">
+      <p className="progress-indicator">
+        Question {current} of {questionCount}
+      </p>
+      <p className="score-line">
+        Score: {score} / {total}
+      </p>
+    </div>
   );
 }
 

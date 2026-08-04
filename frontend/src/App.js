@@ -104,7 +104,12 @@ function App() {
 
       {stage === "playing" && (
         <>
-          <ScoreBoard score={score} total={history.length} />
+          <ScoreBoard
+            current={Math.min(history.length + 1, questionCount)}
+            questionCount={questionCount}
+            score={score}
+            total={history.length}
+          />
           {question && (
             <QuizCard
               question={question}
