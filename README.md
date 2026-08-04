@@ -49,3 +49,14 @@ The app will open at http://localhost:3000
 
 A toggle button at the top of the page switches the whole UI between the
 default color theme and a plain black-and-white theme.
+
+## Hindi pronunciation
+
+Every Hindi choice has a 🔊 speaker button that reads the word out loud using
+the browser's built-in text-to-speech (the Web Speech API, `hi-IN` voice).
+This is especially useful for beginners who can't read Devanagari yet — they
+can hear how a word sounds before or after picking it. There's also a speaker
+button in the answer feedback and on the results screen, so the correct
+pronunciation is always just a click away. Pronunciation quality depends on
+the voices installed in your browser/OS, so it won't always be perfect, but
+it still helps connect the script to the sound.
