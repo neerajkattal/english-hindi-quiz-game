@@ -14,6 +14,7 @@ class Question(BaseModel):
 
     english_word: str
     choices: List[str]
+    category: str
 
 
 class AnswerRequest(BaseModel):
