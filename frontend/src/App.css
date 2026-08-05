@@ -53,6 +53,9 @@
 
 .choice-button {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 18px;
   padding: 12px;
   border: 1px solid #ccc;
@@ -67,6 +70,18 @@
 
 .choice-button:disabled {
   cursor: default;
+}
+
+.choice-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #555;
 }
 
 .speak-button {

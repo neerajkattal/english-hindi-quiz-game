@@ -29,13 +29,14 @@ function QuizCard({ question, onAnswer, feedback, correctHindi }) {
       <p className="category-label">{question.category}</p>
       <p className="english-word">{question.english_word}</p>
       <div className="choices">
-        {question.choices.map((choice) => (
+        {question.choices.map((choice, index) => (
           <div className="choice-row" key={choice}>
             <button
               className="choice-button"
               onClick={() => onAnswer(choice)}
               disabled={!!feedback}
             >
+              <span className="choice-number">{index + 1}</span>
               {choice}
             </button>
             <button
