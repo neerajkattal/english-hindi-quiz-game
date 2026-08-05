@@ -9,6 +9,7 @@ import { speakHindi } from "../utils/speech";
 function QuizCard({ question, onAnswer, feedback, correctHindi }) {
   return (
     <div className="quiz-card">
+      <p className="category-label">{question.category}</p>
       <p className="english-word">{question.english_word}</p>
       <div className="choices">
         {question.choices.map((choice) => (
