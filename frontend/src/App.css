@@ -7,14 +7,32 @@
 }
 
 .score-board {
-  font-weight: bold;
   margin-bottom: 24px;
+}
+
+.progress-indicator {
+  color: #666;
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.score-line {
+  font-weight: bold;
+  margin: 0;
 }
 
 .quiz-card {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 24px;
+}
+
+.category-label {
+  color: #666;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
 }
 
 .english-word {
@@ -86,6 +104,36 @@
 
 .next-button:hover {
   background: #256428;
+}
+
+.category-screen {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.category-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.category-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-button:hover {
+  background: #f0f0f0;
 }
 
 .setup-screen {
