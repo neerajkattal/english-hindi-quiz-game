@@ -5,6 +5,7 @@ import ScoreBoard from "./components/ScoreBoard";
 import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import CategoryScreen from "./components/CategoryScreen";
+import { saveScore } from "./utils/highScores";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
@@ -83,6 +84,7 @@ function App() {
   // Move to the next question, or show the results screen if this was the last one.
   const handleNext = () => {
     if (history.length >= questionCount) {
+      saveScore(selectedCategory, score, history.length);
       setStage("results");
     } else {
       loadQuestion();
