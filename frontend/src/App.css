@@ -136,6 +136,12 @@
   background: #f0f0f0;
 }
 
+.best-score {
+  color: #2e7d32;
+  font-size: 13px;
+  font-weight: bold;
+}
+
 .setup-screen {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -240,28 +246,38 @@
 /* Black & White theme: swaps the greens/reds for plain black, white, and gray. */
 .app.bw h1,
 .app.bw .final-score,
-.app.bw .result-word {
+.app.bw .result-word,
+.app.bw .category-label,
+.app.bw .progress-indicator,
+.app.bw .best-score {
   color: #000;
 }
 
 .app.bw .quiz-card,
 .app.bw .setup-screen,
-.app.bw .results-screen {
+.app.bw .results-screen,
+.app.bw .category-screen {
   border-color: #000;
 }
 
 .app.bw .choice-button,
 .app.bw .count-button,
 .app.bw .theme-toggle button,
-.app.bw .speak-button {
+.app.bw .speak-button,
+.app.bw .category-button {
   background: #fff;
   border: 2px solid #000;
   color: #000;
 }
 
 .app.bw .choice-button:hover:not(:disabled),
-.app.bw .count-button:hover {
+.app.bw .count-button:hover,
+.app.bw .category-button:hover {
   background: #000;
+  color: #fff;
+}
+
+.app.bw .category-button:hover .best-score {
   color: #fff;
 }
 
