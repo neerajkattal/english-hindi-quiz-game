@@ -270,7 +270,14 @@
 .app.bw .result-word,
 .app.bw .category-label,
 .app.bw .progress-indicator,
-.app.bw .best-score {
+.app.bw .best-score,
+.app.bw .keyboard-hint {
+  color: #000;
+}
+
+.app.bw .choice-number {
+  background: #fff;
+  border: 1px solid #000;
   color: #000;
 }
 
