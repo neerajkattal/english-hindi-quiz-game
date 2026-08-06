@@ -49,6 +49,7 @@ function QuizCard({ question, onAnswer, feedback, correctHindi }) {
           </div>
         ))}
       </div>
+      <p className="keyboard-hint">Tip: press 1-4 on your keyboard to answer</p>
       {feedback && (
         <p className="feedback">
           {feedback}
