@@ -6,6 +6,7 @@ import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import CategoryScreen from "./components/CategoryScreen";
 import { saveScore } from "./utils/highScores";
+import { addMistake } from "./utils/mistakes";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
@@ -90,6 +91,7 @@ function App() {
         } else {
           setFeedback(`Wrong. The correct answer was ${result.correct_hindi}`);
           setStreak(0);
+          addMistake(question.english_word);
         }
       });
   };
