@@ -121,6 +121,8 @@ function App() {
             questionCount={questionCount}
             score={score}
             total={history.length}
+            streak={streak}
+            bestStreak={bestStreak}
           />
           {question && (
             <QuizCard
