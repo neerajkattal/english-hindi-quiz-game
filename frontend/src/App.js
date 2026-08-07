@@ -79,6 +79,9 @@ function App() {
         if (result.correct) {
           setScore((prevScore) => prevScore + 1);
           setFeedback("Correct!");
+          // Compute the new streak from the previous state (React batches
+          // updates, so `streak` here could still be stale) and compare it
+          // against the best streak in the same updater.
           setStreak((prevStreak) => {
             const newStreak = prevStreak + 1;
             setBestStreak((prevBest) => Math.max(prevBest, newStreak));
