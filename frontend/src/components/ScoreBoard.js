@@ -1,8 +1,8 @@
 import React from "react";
 
-// Shows which question the player is on and how many they've answered
-// correctly out of the total so far.
-function ScoreBoard({ current, questionCount, score, total }) {
+// Shows which question the player is on, how many they've answered
+// correctly out of the total so far, and their current answer streak.
+function ScoreBoard({ current, questionCount, score, total, streak }) {
   return (
     <div className="score-board">
       <p className="progress-indicator">
@@ -11,6 +11,7 @@ function ScoreBoard({ current, questionCount, score, total }) {
       <p className="score-line">
         Score: {score} / {total}
       </p>
+      <p className="streak-line">Streak: {streak}</p>
     </div>
   );
 }
