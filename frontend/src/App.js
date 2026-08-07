@@ -48,6 +48,8 @@ function App() {
     setQuestionCount(count);
     setScore(0);
     setHistory([]);
+    setStreak(0);
+    setBestStreak(0);
     setStage("playing");
     loadQuestion();
   };
