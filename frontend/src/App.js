@@ -77,8 +77,14 @@ function App() {
         if (result.correct) {
           setScore((prevScore) => prevScore + 1);
           setFeedback("Correct!");
+          setStreak((prevStreak) => {
+            const newStreak = prevStreak + 1;
+            setBestStreak((prevBest) => Math.max(prevBest, newStreak));
+            return newStreak;
+          });
         } else {
           setFeedback(`Wrong. The correct answer was ${result.correct_hindi}`);
+          setStreak(0);
         }
       });
   };
