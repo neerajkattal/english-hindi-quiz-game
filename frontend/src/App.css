@@ -21,6 +21,12 @@
   margin: 0;
 }
 
+.streak-line {
+  color: #e65100;
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+
 .quiz-card {
   border: 1px solid #ddd;
   border-radius: 8px;
