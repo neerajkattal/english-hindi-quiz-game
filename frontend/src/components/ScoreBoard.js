@@ -12,7 +12,7 @@ function ScoreBoard({ current, questionCount, score, total, streak, bestStreak }
         Score: {score} / {total}
       </p>
       <p className="streak-line">
-        Streak: {streak} (Best: {bestStreak})
+        Streak: {streak} (Best: {bestStreak}) {streak >= 3 && "🔥"}
       </p>
     </div>
   );
