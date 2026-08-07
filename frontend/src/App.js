@@ -22,6 +22,8 @@ function App() {
   const [feedback, setFeedback] = useState(null);
   const [correctHindi, setCorrectHindi] = useState(null);
   const [bwMode, setBwMode] = useState(false);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
 
   // Ask the backend for a new question, limited to the chosen category if any.
   const loadQuestion = () => {
