@@ -277,7 +277,8 @@
 .app.bw .category-label,
 .app.bw .progress-indicator,
 .app.bw .best-score,
-.app.bw .keyboard-hint {
+.app.bw .keyboard-hint,
+.app.bw .streak-line {
   color: #000;
 }
 
