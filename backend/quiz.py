@@ -20,20 +20,33 @@ def get_categories():
     return categories
 
 
-def build_question(category: str = None) -> Question:
-    """Pick a random English word (optionally limited to one category) and
-    build 4 Hindi answer choices."""
-    pool = WORD_PAIRS
-    if category:
+def build_question(category: str = None, words: list = None) -> Question:
+    """Pick a random English word and build 4 Hindi answer choices.
+
+    - If `words` is given, only pick the target word from that list (used by
+      the "review mistakes" mode, which can be a very short list).
+    - Otherwise, if `category` is given, only pick from that category.
+    - Otherwise pick from the full word list.
+
+    Wrong choices always come from the target word's own category (across
+    the full word list, not just the filtered pool), so there are always
+    enough plausible options even when `words` is short.
+    """
+    if words:
+        pool = [pair for pair in WORD_PAIRS if pair["english"] in words]
+    elif category:
         pool = [pair for pair in WORD_PAIRS if pair["category"] == category]
+    else:
+        pool = WORD_PAIRS
 
     chosen = random.choice(pool)
 
-    # Grab 3 wrong Hindi words from the rest of the pool.
-    other_hindi_words = [
-        pair["hindi"] for pair in pool if pair["english"] != chosen["english"]
+    same_category_hindi = [
+        pair["hindi"]
+        for pair in WORD_PAIRS
+        if pair["category"] == chosen["category"] and pair["english"] != chosen["english"]
     ]
-    wrong_choices = random.sample(other_hindi_words, 3)
+    wrong_choices = random.sample(same_category_hindi, 3)
 
     choices = wrong_choices + [chosen["hindi"]]
     random.shuffle(choices)
