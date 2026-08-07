@@ -56,6 +56,13 @@ saved in the browser's `localStorage`, so the topic-selection screen shows
 the player's best score per topic across visits — no backend or account
 needed for that, it's purely a frontend feature.
 
+## Answer streaks
+
+The score board also tracks a live answer streak (consecutive correct
+answers) and the best streak of the session, with a 🔥 shown once the streak
+reaches 3. The streak resets to zero on a wrong answer and starts over at
+zero each time a new quiz begins.
+
 ## Black & White mode
 
 A toggle button at the top of the page switches the whole UI between the
