@@ -163,6 +163,15 @@
   background: #f0f0f0;
 }
 
+.review-button {
+  border-color: #e65100;
+  background: #fff3e0;
+}
+
+.review-button:hover {
+  background: #ffe0b2;
+}
+
 .best-score {
   color: #2e7d32;
   font-size: 13px;
