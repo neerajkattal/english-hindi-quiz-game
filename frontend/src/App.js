@@ -6,7 +6,7 @@ import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import CategoryScreen from "./components/CategoryScreen";
 import { saveScore } from "./utils/highScores";
-import { addMistake, removeMistake } from "./utils/mistakes";
+import { addMistake, removeMistake, getMistakes } from "./utils/mistakes";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
@@ -25,14 +25,19 @@ function App() {
   const [bwMode, setBwMode] = useState(false);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+  const [reviewMistakes, setReviewMistakes] = useState(false);
 
-  // Ask the backend for a new question, limited to the chosen category if any.
+  // Ask the backend for a new question, limited to the chosen category or to
+  // the saved mistake words, depending on what the player picked.
   const loadQuestion = () => {
     setFeedback(null);
     setCorrectHindi(null);
-    const url = selectedCategory
-      ? `${API_URL}/quiz/question?category=${encodeURIComponent(selectedCategory)}`
-      : `${API_URL}/quiz/question`;
+    let url = `${API_URL}/quiz/question`;
+    if (reviewMistakes) {
+      url += `?words=${encodeURIComponent(getMistakes().join(","))}`;
+    } else if (selectedCategory) {
+      url += `?category=${encodeURIComponent(selectedCategory)}`;
+    }
     fetch(url)
       .then((res) => res.json())
       .then((data) => setQuestion(data));
@@ -41,6 +46,14 @@ function App() {
   // Remember the chosen topic and move on to picking a question count.
   const selectCategory = (category) => {
     setSelectedCategory(category);
+    setReviewMistakes(false);
+    setStage("setup");
+  };
+
+  // Practice only the words the player has previously gotten wrong.
+  const selectReviewMistakes = () => {
+    setSelectedCategory(null);
+    setReviewMistakes(true);
     setStage("setup");
   };
 
