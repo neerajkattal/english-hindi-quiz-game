@@ -6,7 +6,7 @@ import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import CategoryScreen from "./components/CategoryScreen";
 import { saveScore } from "./utils/highScores";
-import { addMistake } from "./utils/mistakes";
+import { addMistake, removeMistake } from "./utils/mistakes";
 
 // The FastAPI backend runs on port 8000 by default (see backend/README.md).
 const API_URL = "http://localhost:8000";
@@ -80,6 +80,7 @@ function App() {
         if (result.correct) {
           setScore((prevScore) => prevScore + 1);
           setFeedback("Correct!");
+          removeMistake(question.english_word);
           // Compute the new streak from the previous state (React batches
           // updates, so `streak` here could still be stale) and compare it
           // against the best streak in the same updater.
