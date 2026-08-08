@@ -1,6 +1,7 @@
 # English to Hindi Quiz Game
 
-A small full-stack game for practicing English-to-Hindi vocabulary.
+A small full-stack game for practicing English-to-Hindi vocabulary, aimed at
+absolute beginners.
 
 - **Backend:** FastAPI (Python) — serves quiz questions and checks answers
 - **Frontend:** React (JavaScript) — shows the English word and multiple-choice Hindi answers
