@@ -163,6 +163,9 @@
   background: #f0f0f0;
 }
 
+/* No separate .app.bw override needed here: .app.bw .category-button
+   already has higher specificity than .review-button, so Black & White
+   mode automatically wins and turns this back to plain black/white. */
 .review-button {
   border-color: #e65100;
   background: #fff3e0;
