@@ -38,7 +38,8 @@ The app will open at http://localhost:3000
 ## How the game works
 
 1. The player picks a topic to practice (Nature, Family & People, Places &
-   Things, Animals, or All Words).
+   Things, Animals, All Words, or Review Mistakes if any words have been
+   missed before).
 2. The player picks how many questions they want in the session (5, 10, 15, or 20).
 3. The frontend asks the backend for a random question from that topic.
 4. The backend picks an English word and 4 possible Hindi translations (1 correct, 3 wrong).
