@@ -64,6 +64,16 @@ answers) and the best streak of the session, with a 🔥 shown once the streak
 reaches 3. The streak resets to zero on a wrong answer and starts over at
 zero each time a new quiz begins.
 
+## Review Mistakes
+
+Every time the player answers a word wrong, it's added to a "mistakes" list
+saved in `localStorage`. A "Review Mistakes" topic button appears on the
+topic-selection screen (only when there's at least one saved mistake, with a
+live count), and starting it quizzes the player only on those words — using
+a `?words=` filter on the backend's question endpoint instead of a category
+filter. A word drops out of the mistake list automatically as soon as it's
+answered correctly again, in any mode.
+
 ## Black & White mode
 
 A toggle button at the top of the page switches the whole UI between the
