@@ -129,7 +129,9 @@ function App() {
       </div>
       <h1>English → Hindi Quiz</h1>
 
-      {stage === "category" && <CategoryScreen onSelect={selectCategory} />}
+      {stage === "category" && (
+        <CategoryScreen onSelect={selectCategory} onSelectMistakes={selectReviewMistakes} />
+      )}
 
       {stage === "setup" && <SetupScreen onStart={startQuiz} />}
 

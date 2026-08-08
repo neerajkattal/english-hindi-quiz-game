@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 
 import { getBestScore } from "../utils/highScores";
+import { getMistakes } from "../utils/mistakes";
 
 const API_URL = "http://localhost:8000";
 
 // Lets the player choose which topic to practice before picking how many
 // questions to answer. Picking "All Words" mixes every category together.
 // Each button shows the player's best score for that topic, if any.
-function CategoryScreen({ onSelect }) {
+function CategoryScreen({ onSelect, onSelectMistakes }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -25,6 +26,8 @@ function CategoryScreen({ onSelect }) {
     );
   };
 
+  const mistakeCount = getMistakes().length;
+
   return (
     <div className="category-screen">
       <p>Pick a topic to practice</p>
@@ -32,6 +35,10 @@ function CategoryScreen({ onSelect }) {
         <button className="category-button" onClick={() => onSelect(null)}>
           <span>All Words</span>
           {renderBestScore(null)}
+        </button>
+        <button className="category-button review-button" onClick={onSelectMistakes}>
+          <span>Review Mistakes</span>
+          <span className="best-score">{mistakeCount} word{mistakeCount === 1 ? "" : "s"}</span>
         </button>
         {categories.map((category) => (
           <button
