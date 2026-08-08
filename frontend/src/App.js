@@ -113,7 +113,8 @@ function App() {
   // Move to the next question, or show the results screen if this was the last one.
   const handleNext = () => {
     if (history.length >= questionCount) {
-      saveScore(selectedCategory, score, history.length);
+      // Keep review-mistakes scores separate from the "All Words" high score.
+      saveScore(reviewMistakes ? "Review Mistakes" : selectedCategory, score, history.length);
       setStage("results");
     } else {
       loadQuestion();
