@@ -36,10 +36,14 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
           <span>All Words</span>
           {renderBestScore(null)}
         </button>
-        <button className="category-button review-button" onClick={onSelectMistakes}>
-          <span>Review Mistakes</span>
-          <span className="best-score">{mistakeCount} word{mistakeCount === 1 ? "" : "s"}</span>
-        </button>
+        {mistakeCount > 0 && (
+          <button className="category-button review-button" onClick={onSelectMistakes}>
+            <span>Review Mistakes</span>
+            <span className="best-score">
+              {mistakeCount} word{mistakeCount === 1 ? "" : "s"}
+            </span>
+          </button>
+        )}
         {categories.map((category) => (
           <button
             key={category}
