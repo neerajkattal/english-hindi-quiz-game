@@ -109,6 +109,12 @@
   background: #f0f0f0;
 }
 
+.loading-text {
+  color: #999;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
 .feedback {
   margin-top: 16px;
   font-weight: bold;

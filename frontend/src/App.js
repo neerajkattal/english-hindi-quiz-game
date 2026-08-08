@@ -26,12 +26,14 @@ function App() {
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [reviewMistakes, setReviewMistakes] = useState(false);
+  const [loadingQuestion, setLoadingQuestion] = useState(false);
 
   // Ask the backend for a new question, limited to the chosen category or to
   // the saved mistake words, depending on what the player picked.
   const loadQuestion = () => {
     setFeedback(null);
     setCorrectHindi(null);
+    setLoadingQuestion(true);
     let url = `${API_URL}/quiz/question`;
     if (reviewMistakes) {
       url += `?words=${encodeURIComponent(getMistakes().join(","))}`;
@@ -40,7 +42,10 @@ function App() {
     }
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setQuestion(data));
+      .then((data) => {
+        setQuestion(data);
+        setLoadingQuestion(false);
+      });
   };
 
   // Remember the chosen topic and move on to picking a question count.
@@ -146,7 +151,8 @@ function App() {
             streak={streak}
             bestStreak={bestStreak}
           />
-          {question && (
+          {loadingQuestion && <p className="loading-text">Loading question...</p>}
+          {!loadingQuestion && question && (
             <QuizCard
               question={question}
               onAnswer={handleAnswer}
