@@ -27,6 +27,7 @@ function App() {
   const [bestStreak, setBestStreak] = useState(0);
   const [reviewMistakes, setReviewMistakes] = useState(false);
   const [loadingQuestion, setLoadingQuestion] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   // Ask the backend for a new question, limited to the chosen category or to
   // the saved mistake words, depending on what the player picked.
@@ -34,6 +35,7 @@ function App() {
     setFeedback(null);
     setCorrectHindi(null);
     setLoadingQuestion(true);
+    setLoadError(false);
     let url = `${API_URL}/quiz/question`;
     if (reviewMistakes) {
       url += `?words=${encodeURIComponent(getMistakes().join(","))}`;
@@ -45,6 +47,10 @@ function App() {
       .then((data) => {
         setQuestion(data);
         setLoadingQuestion(false);
+      })
+      .catch(() => {
+        setLoadingQuestion(false);
+        setLoadError(true);
       });
   };
 
@@ -152,7 +158,15 @@ function App() {
             bestStreak={bestStreak}
           />
           {loadingQuestion && <p className="loading-text">Loading question...</p>}
-          {!loadingQuestion && question && (
+          {loadError && (
+            <div className="load-error">
+              <p>Couldn't reach the quiz server.</p>
+              <button className="next-button" onClick={loadQuestion}>
+                Retry
+              </button>
+            </div>
+          )}
+          {!loadingQuestion && !loadError && question && (
             <QuizCard
               question={question}
               onAnswer={handleAnswer}

@@ -115,6 +115,11 @@
   padding: 20px 0;
 }
 
+.load-error {
+  color: #c62828;
+  padding: 20px 0;
+}
+
 .feedback {
   margin-top: 16px;
   font-weight: bold;
