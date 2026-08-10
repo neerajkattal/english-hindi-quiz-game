@@ -185,6 +185,8 @@ function App() {
       {stage === "results" && (
         <ResultsScreen history={history} onRestart={() => setStage("category")} />
       )}
+
+      <p className="footer-credit">Built with FastAPI + React</p>
     </div>
   );
 }

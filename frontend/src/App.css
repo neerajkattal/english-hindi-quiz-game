@@ -293,6 +293,12 @@
   cursor: pointer;
 }
 
+.footer-credit {
+  margin-top: 32px;
+  font-size: 12px;
+  color: #bbb;
+}
+
 /* Black & White theme: swaps the greens/reds for plain black, white, and gray. */
 .app.bw h1,
 .app.bw .final-score,
