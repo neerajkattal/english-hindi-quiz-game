@@ -1,3 +1,5 @@
+# No versions pinned on purpose - this is a small teaching project, so we
+# always want the latest compatible releases rather than a locked baseline.
 fastapi
 uvicorn[standard]
 pydantic
