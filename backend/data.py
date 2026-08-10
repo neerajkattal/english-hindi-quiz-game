@@ -5,6 +5,10 @@ Each entry is a dict with the English word, its Hindi translation, and a
 category so the player can practice one topic at a time. There's no
 database here on purpose — this is a basic teaching project, so a plain
 Python list keeps things easy to read and easy to extend.
+
+Each category is kept at 6 words minimum so quiz.py can always sample 3
+plausible wrong choices from the same category, even in "review mistakes"
+mode where only 1-2 words might be selected.
 """
 
 WORD_PAIRS = [
