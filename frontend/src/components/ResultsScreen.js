@@ -2,6 +2,13 @@ import React from "react";
 
 import { speakHindi } from "../utils/speech";
 
+// Formats a whole number of seconds as "Xm Ys" (or just "Ys" under a minute).
+function formatElapsed(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+}
+
 // Shows the final score and a breakdown of every question in the session,
 // marking each one correct or wrong. A speaker button on each row lets the
 // player re-listen to the correct pronunciation while reviewing.
@@ -14,7 +21,7 @@ function ResultsScreen({ history, elapsedSeconds, onRestart }) {
       <p className="final-score">
         You got {correctCount} out of {history.length} correct
       </p>
-      <p className="elapsed-time">Time: {elapsedSeconds}s</p>
+      <p className="elapsed-time">Time: {formatElapsed(elapsedSeconds)}</p>
       <ul className="results-list">
         {history.map((item, index) => (
           <li
