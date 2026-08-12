@@ -74,7 +74,8 @@ topic-selection screen (only when there's at least one saved mistake, with a
 live count), and starting it quizzes the player only on those words — using
 a `?words=` filter on the backend's question endpoint instead of a category
 filter. A word drops out of the mistake list automatically as soon as it's
-answered correctly again, in any mode.
+answered correctly again, in any mode. A "Clear mistake list" link is also
+shown (with a confirmation prompt) so the player can reset it manually.
 
 ## Black & White mode
 
