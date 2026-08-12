@@ -29,8 +29,10 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
   const [mistakeCount, setMistakeCount] = useState(getMistakes().length);
 
   const handleClearMistakes = () => {
-    clearMistakes();
-    setMistakeCount(0);
+    if (window.confirm("Clear your saved mistake list?")) {
+      clearMistakes();
+      setMistakeCount(0);
+    }
   };
 
   return (
