@@ -34,3 +34,8 @@ export function removeMistake(englishWord) {
 export function getMistakes() {
   return readMistakes();
 }
+
+// Wipes the whole mistake list, e.g. if the player wants a fresh start.
+export function clearMistakes() {
+  writeMistakes([]);
+}
