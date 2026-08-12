@@ -192,6 +192,20 @@
   background: #ffe0b2;
 }
 
+.clear-mistakes-button {
+  font-size: 13px;
+  color: #999;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+}
+
+.clear-mistakes-button:hover {
+  color: #666;
+}
+
 .best-score {
   color: #2e7d32;
   font-size: 13px;
