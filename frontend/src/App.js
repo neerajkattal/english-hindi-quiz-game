@@ -28,6 +28,8 @@ function App() {
   const [reviewMistakes, setReviewMistakes] = useState(false);
   const [loadingQuestion, setLoadingQuestion] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [quizStartTime, setQuizStartTime] = useState(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   // Ask the backend for a new question, limited to the chosen category or to
   // the saved mistake words, depending on what the player picked.
@@ -75,6 +77,7 @@ function App() {
     setHistory([]);
     setStreak(0);
     setBestStreak(0);
+    setQuizStartTime(Date.now());
     setStage("playing");
     loadQuestion();
   };
@@ -126,6 +129,7 @@ function App() {
     if (history.length >= questionCount) {
       // Keep review-mistakes scores separate from the "All Words" high score.
       saveScore(reviewMistakes ? "Review Mistakes" : selectedCategory, score, history.length);
+      setElapsedSeconds(Math.round((Date.now() - quizStartTime) / 1000));
       setStage("results");
     } else {
       loadQuestion();
@@ -183,7 +187,11 @@ function App() {
       )}
 
       {stage === "results" && (
-        <ResultsScreen history={history} onRestart={() => setStage("category")} />
+        <ResultsScreen
+          history={history}
+          elapsedSeconds={elapsedSeconds}
+          onRestart={() => setStage("category")}
+        />
       )}
 
       <p className="footer-credit">Built with FastAPI + React</p>
