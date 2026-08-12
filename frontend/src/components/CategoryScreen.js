@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { getBestScore } from "../utils/highScores";
-import { getMistakes } from "../utils/mistakes";
+import { getMistakes, clearMistakes } from "../utils/mistakes";
 
 const API_URL = "http://localhost:8000";
 
@@ -26,7 +26,12 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
     );
   };
 
-  const mistakeCount = getMistakes().length;
+  const [mistakeCount, setMistakeCount] = useState(getMistakes().length);
+
+  const handleClearMistakes = () => {
+    clearMistakes();
+    setMistakeCount(0);
+  };
 
   return (
     <div className="category-screen">
@@ -42,6 +47,11 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
             <span className="best-score">
               {mistakeCount} word{mistakeCount === 1 ? "" : "s"}
             </span>
+          </button>
+        )}
+        {mistakeCount > 0 && (
+          <button className="clear-mistakes-button" onClick={handleClearMistakes}>
+            Clear mistake list
           </button>
         )}
         {categories.map((category) => (
