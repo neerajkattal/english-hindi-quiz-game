@@ -5,7 +5,7 @@ import { speakHindi } from "../utils/speech";
 // Shows the final score and a breakdown of every question in the session,
 // marking each one correct or wrong. A speaker button on each row lets the
 // player re-listen to the correct pronunciation while reviewing.
-function ResultsScreen({ history, onRestart }) {
+function ResultsScreen({ history, elapsedSeconds, onRestart }) {
   const correctCount = history.filter((item) => item.correct).length;
 
   return (
@@ -14,6 +14,7 @@ function ResultsScreen({ history, onRestart }) {
       <p className="final-score">
         You got {correctCount} out of {history.length} correct
       </p>
+      <p className="elapsed-time">Time: {elapsedSeconds}s</p>
       <ul className="results-list">
         {history.map((item, index) => (
           <li
