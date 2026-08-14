@@ -20,6 +20,14 @@ function ResultsScreen({ history, elapsedSeconds, onRestart }) {
     const summary = `English → Hindi Quiz: ${correctCount}/${history.length} correct in ${formatElapsed(
       elapsedSeconds
     )}`;
+
+    // The Clipboard API isn't available in every browser/context (e.g. some
+    // older browsers, or non-HTTPS origins other than localhost), so just
+    // skip silently rather than throwing if it's missing.
+    if (!navigator.clipboard) {
+      return;
+    }
+
     navigator.clipboard.writeText(summary).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
