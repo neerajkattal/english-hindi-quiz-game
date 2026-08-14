@@ -6,6 +6,17 @@ absolute beginners.
 - **Backend:** FastAPI (Python) — serves quiz questions and checks answers
 - **Frontend:** React (JavaScript) — shows the English word and multiple-choice Hindi answers
 
+## Contents
+
+- [Project structure](#project-structure)
+- [Running the project](#running-the-project)
+- [How the game works](#how-the-game-works)
+- [Topics and high scores](#topics-and-high-scores)
+- [Answer streaks](#answer-streaks)
+- [Review Mistakes](#review-mistakes)
+- [Black & White mode](#black--white-mode)
+- [Hindi pronunciation](#hindi-pronunciation)
+
 ## Project structure
 
 ```
