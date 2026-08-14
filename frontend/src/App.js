@@ -40,6 +40,10 @@ function App() {
     setLoadError(false);
     let url = `${API_URL}/quiz/question`;
     if (reviewMistakes) {
+      // getMistakes() is read fresh on every question, not just once at the
+      // start, so if the last mistake word gets answered correctly mid-quiz,
+      // this naturally becomes an empty string and the backend falls back
+      // to the full word list instead of erroring on an empty pool.
       url += `?words=${encodeURIComponent(getMistakes().join(","))}`;
     } else if (selectedCategory) {
       url += `?category=${encodeURIComponent(selectedCategory)}`;
