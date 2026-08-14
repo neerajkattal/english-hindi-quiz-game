@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { speakHindi } from "../utils/speech";
 
@@ -14,6 +14,17 @@ function formatElapsed(totalSeconds) {
 // player re-listen to the correct pronunciation while reviewing.
 function ResultsScreen({ history, elapsedSeconds, onRestart }) {
   const correctCount = history.filter((item) => item.correct).length;
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyResults = () => {
+    const summary = `English → Hindi Quiz: ${correctCount}/${history.length} correct in ${formatElapsed(
+      elapsedSeconds
+    )}`;
+    navigator.clipboard.writeText(summary).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
     <div className="results-screen">
@@ -49,6 +60,9 @@ function ResultsScreen({ history, elapsedSeconds, onRestart }) {
       </ul>
       <button className="start-button" onClick={onRestart}>
         Play Again
+      </button>
+      <button className="copy-results-button" onClick={handleCopyResults}>
+        {copied ? "Copied!" : "Copy Results"}
       </button>
     </div>
   );
