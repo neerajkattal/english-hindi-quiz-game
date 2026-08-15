@@ -33,6 +33,9 @@ function App() {
 
   // Ask the backend for a new question, limited to the chosen category or to
   // the saved mistake words, depending on what the player picked.
+  // `reviewMistakes` takes priority over `selectedCategory` below; they're
+  // never both meaningful at once since selectCategory() and
+  // selectReviewMistakes() always reset the other one.
   const loadQuestion = () => {
     setFeedback(null);
     setCorrectHindi(null);
