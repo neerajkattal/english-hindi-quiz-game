@@ -255,6 +255,22 @@
   background: #256428;
 }
 
+.copy-results-button {
+  margin-top: 8px;
+  margin-left: 8px;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: 1px solid #2e7d32;
+  border-radius: 6px;
+  background: white;
+  color: #2e7d32;
+  cursor: pointer;
+}
+
+.copy-results-button:hover {
+  background: #e8f5e9;
+}
+
 .results-screen {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -388,6 +404,17 @@
 .app.bw .start-button:hover,
 .app.bw .next-button:hover {
   background: #333;
+}
+
+.app.bw .copy-results-button {
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+}
+
+.app.bw .copy-results-button:hover {
+  background: #000;
+  color: #fff;
 }
 
 .app.bw .result-correct,
