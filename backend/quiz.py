@@ -23,8 +23,8 @@ def get_categories():
 def build_question(category: str = None, words: list = None) -> Question:
     """Pick a random English word and build 4 Hindi answer choices.
 
-    - If `words` is given, only pick the target word from that list (used by
-      the "review mistakes" mode, which can be a very short list).
+    - If `words` is given, only pick a word from that list (used by the
+      "review mistakes" mode, which can be a very short list).
     - Otherwise, if `category` is given, only pick from that category.
     - Otherwise pick from the full word list.
 
