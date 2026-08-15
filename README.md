@@ -17,6 +17,7 @@ absolute beginners.
 - [Black & White mode](#black--white-mode)
 - [Hindi pronunciation](#hindi-pronunciation)
 - [Results screen extras](#results-screen-extras)
+- [Other small touches](#other-small-touches)
 
 ## Project structure
 
@@ -111,3 +112,9 @@ The results screen also shows how long the session took, and has a "Copy
 Results" button that copies a one-line summary (score and time) to the
 clipboard, so it's easy to paste into a chat or notes app to brag about a
 score or track progress over time.
+
+## Other small touches
+
+A loading message and a retry-on-failure message cover the moment while a
+question is being fetched (or if the backend can't be reached), and a short
+footer credits the tech stack used to build the game.
