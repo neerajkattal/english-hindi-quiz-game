@@ -16,6 +16,7 @@ absolute beginners.
 - [Review Mistakes](#review-mistakes)
 - [Black & White mode](#black--white-mode)
 - [Hindi pronunciation](#hindi-pronunciation)
+- [Results screen extras](#results-screen-extras)
 
 ## Project structure
 
@@ -103,3 +104,10 @@ button in the answer feedback and on the results screen, so the correct
 pronunciation is always just a click away. Pronunciation quality depends on
 the voices installed in your browser/OS, so it won't always be perfect, but
 it still helps connect the script to the sound.
+
+## Results screen extras
+
+The results screen also shows how long the session took, and has a "Copy
+Results" button that copies a one-line summary (score and time) to the
+clipboard, so it's easy to paste into a chat or notes app to brag about a
+score or track progress over time.
