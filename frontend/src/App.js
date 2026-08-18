@@ -8,8 +8,9 @@ import CategoryScreen from "./components/CategoryScreen";
 import { saveScore } from "./utils/highScores";
 import { addMistake, removeMistake, getMistakes } from "./utils/mistakes";
 
-// The FastAPI backend runs on port 8000 by default (see backend/README.md).
-const API_URL = "http://localhost:8000";
+// The FastAPI backend runs on port 8000 locally (see backend/README.md).
+// In production, REACT_APP_API_URL points at the deployed backend.
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 function App() {
   // "category" -> choosing a topic, "setup" -> choosing how many questions,

@@ -18,12 +18,12 @@ from quiz import build_question, check_answer, get_categories
 
 app = FastAPI(title="English to Hindi Quiz Game")
 
-# Allow the React dev server (usually http://localhost:3000) to call this API.
-# Without this, the browser blocks the frontend's fetch() calls entirely,
-# since the API and the frontend dev server run on different ports.
+# The API is public and read-only with no auth/cookies, so it's safe to
+# allow any origin. Without this, the browser blocks the frontend's fetch()
+# calls entirely, since the API and the frontend run on different origins.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

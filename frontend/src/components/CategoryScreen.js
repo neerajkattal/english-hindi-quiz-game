@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getBestScore } from "../utils/highScores";
 import { getMistakes, clearMistakes } from "../utils/mistakes";
 
-const API_URL = "http://localhost:8000";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 // Lets the player choose which topic to practice before picking how many
 // questions to answer. Picking "All Words" mixes every category together.
