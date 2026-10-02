@@ -29,3 +29,23 @@ class AnswerResponse(BaseModel):
 
     correct: bool
     correct_hindi: str
+    # Romanised pronunciation of the correct answer, for beginners.
+    correct_roman: str
+
+
+class Topic(BaseModel):
+    """A word category, with its Hindi name and how many words it holds."""
+
+    name: str
+    hindi: str
+    roman: str
+    word_count: int
+
+
+class Word(BaseModel):
+    """A single vocabulary entry (used for the word of the day)."""
+
+    english: str
+    hindi: str
+    roman: str
+    category: str

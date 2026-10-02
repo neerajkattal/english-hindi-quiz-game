@@ -3,6 +3,8 @@ FastAPI app entry point for the English to Hindi quiz game.
 
 Exposes quiz endpoints on top of the health-check route:
   - GET  /categories     -> the list of word categories
+  - GET  /topics         -> categories with Hindi names and word counts
+  - GET  /word-of-the-day -> one featured word, the same for everyone each day
   - GET  /quiz/question  -> a new random question, optionally filtered by
                             category or by a specific list of English words
   - POST /quiz/answer    -> check a submitted answer
@@ -13,8 +15,8 @@ from typing import List, Optional
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import AnswerRequest, AnswerResponse, Question
-from quiz import build_question, check_answer, get_categories
+from models import AnswerRequest, AnswerResponse, Question, Topic, Word
+from quiz import build_question, check_answer, get_categories, get_topics, word_of_the_day
 
 app = FastAPI(title="English to Hindi Quiz Game")
 
@@ -41,18 +43,33 @@ def list_categories():
     return get_categories()
 
 
+@app.get("/topics", response_model=List[Topic])
+def list_topics():
+    """Return each category with its Hindi name, romanised name and word count."""
+    return get_topics()
+
+
+@app.get("/word-of-the-day", response_model=Word)
+def get_word_of_the_day():
+    """Return today's featured word."""
+    return word_of_the_day()
+
+
 @app.get("/quiz/question", response_model=Question)
 def get_question(
     category: Optional[str] = Query(default=None),
     words: Optional[str] = Query(default=None),
+    exclude: Optional[str] = Query(default=None),
 ):
     """Return a new random quiz question.
 
     Optionally limited to one category, or to a comma-separated list of
-    specific English words (used by the "review mistakes" mode).
+    specific English words (used by the "review mistakes" mode). `exclude`
+    lists words already asked this round, so they aren't repeated.
     """
     word_list = words.split(",") if words else None
-    return build_question(category, word_list)
+    exclude_list = exclude.split(",") if exclude else None
+    return build_question(category, word_list, exclude_list)
 
 
 @app.post("/quiz/answer", response_model=AnswerResponse)
