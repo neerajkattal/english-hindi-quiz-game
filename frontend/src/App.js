@@ -1,59 +1,67 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
+import Header from "./components/Header";
 import QuizCard from "./components/QuizCard";
 import ScoreBoard from "./components/ScoreBoard";
 import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import CategoryScreen from "./components/CategoryScreen";
+import { fetchQuestion, fetchTopics, submitAnswer } from "./api";
 import { saveScore } from "./utils/highScores";
 import { addMistake, removeMistake, getMistakes } from "./utils/mistakes";
+import { isSoundOn, playSound, setSoundOn } from "./utils/sound";
 
-// The FastAPI backend runs on port 8000 locally (see backend/README.md).
-// In production, REACT_APP_API_URL points at the deployed backend.
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+// Streak lengths that get a little celebration sound instead of the usual chime.
+const STREAK_MILESTONES = [3, 5, 10, 15, 20];
 
 function App() {
   // "category" -> choosing a topic, "setup" -> choosing how many questions,
   // "playing" -> answering them, "results" -> final score screen
   const [stage, setStage] = useState("category");
+  const [topics, setTopics] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [reviewMistakes, setReviewMistakes] = useState(false);
   const [questionCount, setQuestionCount] = useState(10);
   const [question, setQuestion] = useState(null);
+  const [result, setResult] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [history, setHistory] = useState([]);
-  const [feedback, setFeedback] = useState(null);
-  const [correctHindi, setCorrectHindi] = useState(null);
-  const [bwMode, setBwMode] = useState(false);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
-  const [reviewMistakes, setReviewMistakes] = useState(false);
   const [loadingQuestion, setLoadingQuestion] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [quizStartTime, setQuizStartTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [bwMode, setBwMode] = useState(false);
+  const [soundOn, setSoundOnState] = useState(isSoundOn);
 
-  // Ask the backend for a new question, limited to the chosen category or to
-  // the saved mistake words, depending on what the player picked.
-  // `reviewMistakes` takes priority over `selectedCategory` below; they're
-  // never both meaningful at once since selectCategory() and
-  // selectReviewMistakes() always reset the other one.
-  const loadQuestion = () => {
-    setFeedback(null);
-    setCorrectHindi(null);
+  // Topic metadata (Hindi names) for the setup and question screens. The
+  // home screen fetches its own copy so it can show its own loading state.
+  useEffect(() => {
+    fetchTopics()
+      .then(setTopics)
+      .catch(() => {});
+  }, []);
+
+  const topicFor = (name) => {
+    if (reviewMistakes) return { name: "Review mistakes", hindi: "दोहराना" };
+    if (!name) return { name: "All words", hindi: "सब शब्द" };
+    return topics.find((t) => t.name === name) || { name };
+  };
+
+  // Ask the backend for a new question, limited to the saved mistake words or
+  // to the chosen category. getMistakes() is read fresh every time, so if the
+  // last mistake gets answered correctly mid-round the list becomes empty and
+  // the backend falls back to the full word list.
+  const loadQuestion = useCallback(() => {
+    setResult(null);
+    setSelected(null);
     setLoadingQuestion(true);
     setLoadError(false);
-    let url = `${API_URL}/quiz/question`;
-    if (reviewMistakes) {
-      // getMistakes() is read fresh on every question, not just once at the
-      // start, so if the last mistake word gets answered correctly mid-quiz,
-      // this naturally becomes an empty string and the backend falls back
-      // to the full word list instead of erroring on an empty pool.
-      url += `?words=${encodeURIComponent(getMistakes().join(","))}`;
-    } else if (selectedCategory) {
-      url += `?category=${encodeURIComponent(selectedCategory)}`;
-    }
-    fetch(url)
-      .then((res) => res.json())
+    const asked = history.map((item) => item.english_word);
+    const options = reviewMistakes ? { words: getMistakes() } : { category: selectedCategory };
+    fetchQuestion({ ...options, exclude: asked })
       .then((data) => {
         setQuestion(data);
         setLoadingQuestion(false);
@@ -62,78 +70,78 @@ function App() {
         setLoadingQuestion(false);
         setLoadError(true);
       });
-  };
+  }, [reviewMistakes, selectedCategory, history]);
 
-  // Remember the chosen topic and move on to picking a question count.
   const selectCategory = (category) => {
     setSelectedCategory(category);
     setReviewMistakes(false);
     setStage("setup");
   };
 
-  // Practice only the words the player has previously gotten wrong.
   const selectReviewMistakes = () => {
     setSelectedCategory(null);
     setReviewMistakes(true);
     setStage("setup");
   };
 
-  // Start a new quiz session with the chosen number of questions.
   const startQuiz = (count) => {
     setQuestionCount(count);
     setScore(0);
     setHistory([]);
     setStreak(0);
     setBestStreak(0);
+    setQuestion(null);
     setQuizStartTime(Date.now());
     setStage("playing");
-    loadQuestion();
   };
 
-  // Send the player's choice to the backend, record the result, and show if it was right.
-  const handleAnswer = (selectedHindi) => {
-    fetch(`${API_URL}/quiz/answer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        english_word: question.english_word,
-        selected_hindi: selectedHindi,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        setHistory((prevHistory) => [
-          ...prevHistory,
-          {
-            english_word: question.english_word,
-            selected_hindi: selectedHindi,
-            correct_hindi: result.correct_hindi,
-            correct: result.correct,
-          },
-        ]);
-        setCorrectHindi(result.correct_hindi);
-        if (result.correct) {
-          setScore((prevScore) => prevScore + 1);
-          setFeedback("Correct!");
-          removeMistake(question.english_word);
-          // Compute the new streak from the previous state (React batches
-          // updates, so `streak` here could still be stale) and compare it
-          // against the best streak in the same updater.
-          setStreak((prevStreak) => {
-            const newStreak = prevStreak + 1;
-            setBestStreak((prevBest) => Math.max(prevBest, newStreak));
-            return newStreak;
-          });
-        } else {
-          setFeedback(`Wrong. The correct answer was ${result.correct_hindi}`);
-          setStreak(0);
-          addMistake(question.english_word);
-        }
-      });
-  };
+  // Load the first question once the round has started (after state settles,
+  // so review mode / category are already applied).
+  useEffect(() => {
+    if (stage === "playing" && !question && !loadingQuestion && !loadError) loadQuestion();
+  }, [stage, question, loadingQuestion, loadError, loadQuestion]);
 
-  // Move to the next question, or show the results screen if this was the last one.
-  const handleNext = () => {
+  // Check the player's choice, record it, and play a sound for the result.
+  const handleAnswer = useCallback(
+    (selectedHindi) => {
+      if (selected) return;
+      setSelected(selectedHindi);
+      submitAnswer(question.english_word, selectedHindi)
+        .then((answer) => {
+          setResult(answer);
+          setHistory((prev) => [
+            ...prev,
+            {
+              english_word: question.english_word,
+              selected_hindi: selectedHindi,
+              correct_hindi: answer.correct_hindi,
+              correct_roman: answer.correct_roman,
+              correct: answer.correct,
+            },
+          ]);
+          if (answer.correct) {
+            setScore((prev) => prev + 1);
+            removeMistake(question.english_word);
+            const newStreak = streak + 1;
+            setStreak(newStreak);
+            setBestStreak((prev) => Math.max(prev, newStreak));
+            playSound(STREAK_MILESTONES.includes(newStreak) ? "streak" : "correct");
+          } else {
+            setStreak(0);
+            addMistake(question.english_word);
+            playSound("wrong");
+          }
+        })
+        .catch(() => {
+          setSelected(null);
+          setLoadError(true);
+        });
+    },
+    [question, selected, streak]
+  );
+
+  // Move to the next question, or show the results if this was the last one.
+  const handleNext = useCallback(() => {
     if (history.length >= questionCount) {
       // Keep review-mistakes scores separate from the "All Words" high score.
       saveScore(reviewMistakes ? "Review Mistakes" : selectedCategory, score, history.length);
@@ -142,67 +150,83 @@ function App() {
     } else {
       loadQuestion();
     }
+  }, [history.length, questionCount, reviewMistakes, selectedCategory, score, quizStartTime, loadQuestion]);
+
+  const toggleSound = () => {
+    setSoundOn(!soundOn);
+    setSoundOnState(!soundOn);
+  };
+
+  const goHome = () => {
+    setQuestion(null);
+    setStage("category");
   };
 
   return (
     <div className={`app ${bwMode ? "bw" : ""}`}>
-      <div className="theme-toggle">
-        <button onClick={() => setBwMode((prevBwMode) => !prevBwMode)}>
-          {bwMode ? "Color Mode" : "Black & White Mode"}
-        </button>
-      </div>
-      <h1>English → Hindi Quiz</h1>
+      <Header
+        soundOn={soundOn}
+        onToggleSound={toggleSound}
+        bwMode={bwMode}
+        onToggleBw={() => setBwMode((prev) => !prev)}
+        onHome={goHome}
+      />
 
-      {stage === "category" && (
-        <CategoryScreen onSelect={selectCategory} onSelectMistakes={selectReviewMistakes} />
-      )}
+      <main className="page">
+        {stage === "category" && <CategoryScreen onSelect={selectCategory} onSelectMistakes={selectReviewMistakes} />}
 
-      {stage === "setup" && <SetupScreen onStart={startQuiz} />}
+        {stage === "setup" && (
+          <SetupScreen topic={topicFor(selectedCategory)} onStart={startQuiz} onBack={goHome} />
+        )}
 
-      {stage === "playing" && (
-        <>
-          <ScoreBoard
-            current={Math.min(history.length + 1, questionCount)}
-            questionCount={questionCount}
-            score={score}
-            total={history.length}
-            streak={streak}
-            bestStreak={bestStreak}
-          />
-          {loadingQuestion && <p className="loading-text">Loading question...</p>}
-          {loadError && (
-            <div className="load-error">
-              <p>Couldn't reach the quiz server.</p>
-              <button className="next-button" onClick={loadQuestion}>
-                Retry
-              </button>
-            </div>
-          )}
-          {!loadingQuestion && !loadError && question && (
-            <QuizCard
-              question={question}
-              onAnswer={handleAnswer}
-              feedback={feedback}
-              correctHindi={correctHindi}
+        {stage === "playing" && (
+          <div className="play-screen">
+            <ScoreBoard
+              history={history}
+              answered={!!result}
+              questionCount={questionCount}
+              score={score}
+              streak={streak}
+              bestStreak={bestStreak}
             />
-          )}
-          {feedback && (
-            <button className="next-button" onClick={handleNext}>
-              {history.length >= questionCount ? "See Results" : "Next word"}
+            {loadingQuestion && <p className="loading-text">Loading the next word…</p>}
+            {loadError && (
+              <div className="load-error card">
+                <p>Couldn’t reach the quiz server.</p>
+                <button className="primary-button" onClick={loadQuestion}>
+                  Retry
+                </button>
+              </div>
+            )}
+            {!loadingQuestion && !loadError && question && (
+              <QuizCard
+                question={question}
+                topic={topics.find((t) => t.name === question.category)}
+                onAnswer={handleAnswer}
+                result={result}
+                selected={selected}
+                onNext={handleNext}
+                isLast={history.length >= questionCount}
+              />
+            )}
+            <button className="link-button quit-button" onClick={goHome}>
+              Quit round
             </button>
-          )}
-        </>
-      )}
+          </div>
+        )}
 
-      {stage === "results" && (
-        <ResultsScreen
-          history={history}
-          elapsedSeconds={elapsedSeconds}
-          onRestart={() => setStage("category")}
-        />
-      )}
+        {stage === "results" && (
+          <ResultsScreen
+            history={history}
+            elapsedSeconds={elapsedSeconds}
+            bestStreak={bestStreak}
+            onRestart={goHome}
+            onReviewMistakes={selectReviewMistakes}
+          />
+        )}
+      </main>
 
-      <p className="footer-credit">Built with FastAPI + React</p>
+      <footer className="footer-credit">Built with FastAPI + React</footer>
     </div>
   );
 }
