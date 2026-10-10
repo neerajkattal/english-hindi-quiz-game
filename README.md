@@ -1,7 +1,9 @@
-# English to Hindi Quiz Game
+# Shabd: English to Hindi Quiz Game
 
 A small full-stack game for practicing English-to-Hindi vocabulary, aimed at
-absolute beginners.
+absolute beginners. *Shabd* (शब्द) means "word"; the design borrows from where
+the language is spoken (indigo, saffron and madder red, arched doorways, a
+marigold toran) while keeping the screens calm and readable.
 
 - **Backend:** FastAPI (Python) — serves quiz questions and checks answers
 - **Frontend:** React (JavaScript) — shows the English word and multiple-choice Hindi answers
@@ -16,6 +18,8 @@ absolute beginners.
 - [Review Mistakes](#review-mistakes)
 - [Black & White mode](#black--white-mode)
 - [Hindi pronunciation](#hindi-pronunciation)
+- [Word of the day](#word-of-the-day)
+- [Sound and animation](#sound-and-animation)
 - [Results screen extras](#results-screen-extras)
 - [Other small touches](#other-small-touches)
 
@@ -51,22 +55,27 @@ The app will open at http://localhost:3000
 
 ## How the game works
 
-1. The player picks a topic to practice (Nature, Family & People, Places &
-   Things, Animals, All Words, or Review Mistakes if any words have been
-   missed before).
+1. The player picks a topic to practice (one of 11, such as Market, Food &
+   Kitchen or Festivals; All Words; or Review Mistakes if any words have
+   been missed before).
 2. The player picks how many questions they want in the session (5, 10, 15, or 20).
-3. The frontend asks the backend for a random question from that topic.
+3. The frontend asks the backend for a random question from that topic,
+   skipping words already asked this round.
 4. The backend picks an English word and 4 possible Hindi translations (1 correct, 3 wrong).
 5. The player picks an answer (by clicking, or by pressing 1-4 on the
    keyboard); the frontend sends it to the backend to check.
-6. A progress indicator ("Question X of N"), the running score, and the
-   answer streak all update, and the next question loads.
+6. The right answer is revealed with its romanised pronunciation (e.g.
+   थैला, *thaila*). A progress bar, the running score, and the answer streak
+   all update; Enter (or "Next word") loads the next question.
 7. After the last question, a results screen shows the final score and every
    question with the player's answer marked correct or wrong.
 
 ## Topics and high scores
 
-Words are grouped into topics on the backend, and the player can focus on
+There are 168 words in 11 topics (`backend/data.py`), each topic with a Hindi
+name shown on its card (बाज़ार Market, रसोई Food & Kitchen, त्योहार
+Festivals, and so on); `GET /topics` returns them with word counts. Words are
+grouped into topics on the backend, and the player can focus on
 just one (or mix them all together with "All Words"). Each quiz result is
 saved in the browser's `localStorage`, so the topic-selection screen shows
 the player's best score per topic across visits — no backend or account
@@ -76,7 +85,8 @@ needed for that, it's purely a frontend feature.
 
 The score board also tracks a live answer streak (consecutive correct
 answers) and the best streak of the session, with a 🔥 shown once the streak
-reaches 3. The streak resets to zero on a wrong answer and starts over at
+reaches 3, and a short celebratory sound at 3, 5, 10 and more in a row.
+The streak resets to zero on a wrong answer and starts over at
 zero each time a new quiz begins.
 
 ## Review Mistakes
@@ -92,12 +102,12 @@ shown (with a confirmation prompt) so the player can reset it manually.
 
 ## Black & White mode
 
-A toggle button at the top of the page switches the whole UI between the
-default color theme and a plain black-and-white theme.
+A "B&W" button in the header switches the whole UI between the default
+colour theme and a plain black-and-white version of it.
 
 ## Hindi pronunciation
 
-Every Hindi choice has a 🔊 speaker button that reads the word out loud using
+Every Hindi choice has a speaker button that reads the word out loud using
 the browser's built-in text-to-speech (the Web Speech API, `hi-IN` voice).
 This is especially useful for beginners who can't read Devanagari yet — they
 can hear how a word sounds before or after picking it. There's also a speaker
@@ -106,9 +116,26 @@ pronunciation is always just a click away. Pronunciation quality depends on
 the voices installed in your browser/OS, so it won't always be perfect, but
 it still helps connect the script to the sound.
 
+## Word of the day
+
+The home screen features one word each day (`GET /word-of-the-day`), the
+same for everyone, with its pronunciation, so there's something new to learn
+even before starting a round.
+
+## Sound and animation
+
+Correct and wrong answers, streak milestones and finishing a round each have
+a short sound, synthesised with the Web Audio API (no audio files to
+download). The speaker button in the header mutes them, and the choice is
+remembered. Answer tiles pop when right and shake when wrong, and a good round
+ends with falling marigold petals. All motion is turned off for people who
+prefer reduced motion.
+
 ## Results screen extras
 
-The results screen also shows how long the session took, and has a "Copy
+The results screen shows the score as a ring, a short verdict in Hindi, the
+best streak, every word with its romanisation, and a shortcut to review the
+missed words. It also shows how long the session took, and has a "Copy
 Results" button that copies a one-line summary (score and time) to the
 clipboard, so it's easy to paste into a chat or notes app to brag about a
 score or track progress over time.
