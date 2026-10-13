@@ -4,6 +4,7 @@ FastAPI app entry point for the English to Hindi quiz game.
 Exposes quiz endpoints on top of the health-check route:
   - GET  /categories     -> the list of word categories
   - GET  /topics         -> categories with Hindi names and word counts
+  - GET  /words          -> every word with its Hindi and pronunciation
   - GET  /word-of-the-day -> one featured word, the same for everyone each day
   - GET  /quiz/question  -> a new random question, optionally filtered by
                             category or by a specific list of English words
@@ -16,7 +17,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from models import AnswerRequest, AnswerResponse, Question, Topic, Word
-from quiz import build_question, check_answer, get_categories, get_topics, word_of_the_day
+from quiz import build_question, check_answer, get_categories, get_topics, get_words, word_of_the_day
 
 app = FastAPI(title="English to Hindi Quiz Game")
 
@@ -47,6 +48,12 @@ def list_categories():
 def list_topics():
     """Return each category with its Hindi name, romanised name and word count."""
     return get_topics()
+
+
+@app.get("/words", response_model=List[Word])
+def list_words():
+    """Return every word with its Hindi, pronunciation and topic."""
+    return get_words()
 
 
 @app.get("/word-of-the-day", response_model=Word)

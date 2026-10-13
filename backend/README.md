@@ -5,7 +5,7 @@ Small API for the English to Hindi quiz game.
 ## Files
 
 - `main.py` — the FastAPI app and route definitions
-- `data.py` — the topics (with Hindi names) and the hardcoded list of 168 English/Hindi word pairs, each with a romanised pronunciation and a topic
+- `data.py` — the topics (with Hindi names) and the hardcoded list of 348 English/Hindi word pairs, each with a romanised pronunciation and a topic
 - `models.py` — Pydantic request/response models
 - `quiz.py` — quiz logic (picking questions, optionally by category or by a
   specific word list, checking answers)
@@ -24,6 +24,7 @@ uvicorn main:app --reload
 | GET    | `/`               | Health check                                                    |
 | GET    | `/categories`     | List available word categories                                  |
 | GET    | `/topics`         | Each category with its Hindi name, romanised name and word count |
+| GET    | `/words`          | Every word with its Hindi, pronunciation and topic (used for the mistakes list) |
 | GET    | `/word-of-the-day`| Today's featured word (the same for everyone each day)           |
 | GET    | `/quiz/question`  | Get a new random question with 4 Hindi choices; accepts an optional `?category=` filter, or a `?words=water,fire` comma-separated list to restrict to specific English words; `?exclude=` skips words already asked this round |
 | POST   | `/quiz/answer`    | Submit `{english_word, selected_hindi}`; returns `correct`, `correct_hindi` and `correct_roman` |

@@ -19,6 +19,13 @@ def get_categories():
     return [topic["name"] for topic in TOPICS]
 
 
+def get_words():
+    """Return every word with its Hindi and pronunciation. The frontend uses
+    it to show the player's saved mistakes with their correct answers, and to
+    drop saved words that are no longer in the list."""
+    return [Word(**pair) for pair in WORD_PAIRS]
+
+
 def get_topics():
     """Return every topic with its Hindi name and how many words it has."""
     return [
