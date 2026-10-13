@@ -6,9 +6,10 @@ import ScoreBoard from "./components/ScoreBoard";
 import SetupScreen from "./components/SetupScreen";
 import ResultsScreen from "./components/ResultsScreen";
 import CategoryScreen from "./components/CategoryScreen";
+import MistakesScreen from "./components/MistakesScreen";
 import { fetchQuestion, fetchTopics, submitAnswer } from "./api";
 import { saveScore } from "./utils/highScores";
-import { addMistake, removeMistake, getMistakes } from "./utils/mistakes";
+import { addMistake, removeMistake } from "./utils/mistakes";
 import { isSoundOn, playSound, setSoundOn } from "./utils/sound";
 
 // Streak lengths that get a little celebration sound instead of the usual chime.
@@ -16,11 +17,11 @@ const STREAK_MILESTONES = [3, 5, 10, 15, 20];
 
 function App() {
   // "category" -> choosing a topic, "setup" -> choosing how many questions,
-  // "playing" -> answering them, "results" -> final score screen
+  // "playing" -> answering them, "results" -> final score screen,
+  // "mistakes" -> the list of words the player has gotten wrong
   const [stage, setStage] = useState("category");
   const [topics, setTopics] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [reviewMistakes, setReviewMistakes] = useState(false);
   const [questionCount, setQuestionCount] = useState(10);
   const [question, setQuestion] = useState(null);
   const [result, setResult] = useState(null);
@@ -45,23 +46,19 @@ function App() {
   }, []);
 
   const topicFor = (name) => {
-    if (reviewMistakes) return { name: "Review mistakes", hindi: "दोहराना" };
     if (!name) return { name: "All words", hindi: "सब शब्द" };
     return topics.find((t) => t.name === name) || { name };
   };
 
-  // Ask the backend for a new question, limited to the saved mistake words or
-  // to the chosen category. getMistakes() is read fresh every time, so if the
-  // last mistake gets answered correctly mid-round the list becomes empty and
-  // the backend falls back to the full word list.
+  // Ask the backend for a new question from the chosen category (or any
+  // category), skipping words already asked this round.
   const loadQuestion = useCallback(() => {
     setResult(null);
     setSelected(null);
     setLoadingQuestion(true);
     setLoadError(false);
     const asked = history.map((item) => item.english_word);
-    const options = reviewMistakes ? { words: getMistakes() } : { category: selectedCategory };
-    fetchQuestion({ ...options, exclude: asked })
+    fetchQuestion({ category: selectedCategory, exclude: asked })
       .then((data) => {
         setQuestion(data);
         setLoadingQuestion(false);
@@ -70,17 +67,10 @@ function App() {
         setLoadingQuestion(false);
         setLoadError(true);
       });
-  }, [reviewMistakes, selectedCategory, history]);
+  }, [selectedCategory, history]);
 
   const selectCategory = (category) => {
     setSelectedCategory(category);
-    setReviewMistakes(false);
-    setStage("setup");
-  };
-
-  const selectReviewMistakes = () => {
-    setSelectedCategory(null);
-    setReviewMistakes(true);
     setStage("setup");
   };
 
@@ -96,7 +86,7 @@ function App() {
   };
 
   // Load the first question once the round has started (after state settles,
-  // so review mode / category are already applied).
+  // so the chosen category is already applied).
   useEffect(() => {
     if (stage === "playing" && !question && !loadingQuestion && !loadError) loadQuestion();
   }, [stage, question, loadingQuestion, loadError, loadQuestion]);
@@ -128,7 +118,7 @@ function App() {
             playSound(STREAK_MILESTONES.includes(newStreak) ? "streak" : "correct");
           } else {
             setStreak(0);
-            addMistake(question.english_word);
+            addMistake(question.english_word, selectedHindi);
             playSound("wrong");
           }
         })
@@ -143,14 +133,13 @@ function App() {
   // Move to the next question, or show the results if this was the last one.
   const handleNext = useCallback(() => {
     if (history.length >= questionCount) {
-      // Keep review-mistakes scores separate from the "All Words" high score.
-      saveScore(reviewMistakes ? "Review Mistakes" : selectedCategory, score, history.length);
+      saveScore(selectedCategory, score, history.length);
       setElapsedSeconds(Math.round((Date.now() - quizStartTime) / 1000));
       setStage("results");
     } else {
       loadQuestion();
     }
-  }, [history.length, questionCount, reviewMistakes, selectedCategory, score, quizStartTime, loadQuestion]);
+  }, [history.length, questionCount, selectedCategory, score, quizStartTime, loadQuestion]);
 
   const toggleSound = () => {
     setSoundOn(!soundOn);
@@ -173,7 +162,9 @@ function App() {
       />
 
       <main className="page">
-        {stage === "category" && <CategoryScreen onSelect={selectCategory} onSelectMistakes={selectReviewMistakes} />}
+        {stage === "category" && <CategoryScreen onSelect={selectCategory} onShowMistakes={() => setStage("mistakes")} />}
+
+        {stage === "mistakes" && <MistakesScreen onBack={goHome} />}
 
         {stage === "setup" && (
           <SetupScreen topic={topicFor(selectedCategory)} onStart={startQuiz} onBack={goHome} />
@@ -221,7 +212,7 @@ function App() {
             elapsedSeconds={elapsedSeconds}
             bestStreak={bestStreak}
             onRestart={goHome}
-            onReviewMistakes={selectReviewMistakes}
+            onReviewMistakes={() => setStage("mistakes")}
           />
         )}
       </main>

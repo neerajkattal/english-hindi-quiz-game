@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import { fetchTopics, fetchWordOfTheDay } from "../api";
+import { fetchTopics, fetchWordList, fetchWordOfTheDay } from "../api";
 import { getBestScore } from "../utils/highScores";
-import { getMistakes, clearMistakes } from "../utils/mistakes";
+import { getMistakes, pruneMistakes } from "../utils/mistakes";
 import { speakHindi } from "../utils/speech";
 import { SpeakerIcon } from "./Icons";
 import Rangoli from "./Rangoli";
@@ -10,10 +10,11 @@ import Rangoli from "./Rangoli";
 // Arch colours cycle through the palette so neighbouring topics differ.
 const ARCH_COLOURS = ["madder", "peacock", "turmeric", "indigo", "plum"];
 
-// Home screen: a short intro, today's word, and the topic picker. Picking
-// "All words" mixes every topic; "Review mistakes" replays missed words.
-// Each topic shows the player's best score, if any.
-function CategoryScreen({ onSelect, onSelectMistakes }) {
+// Home screen: a short intro, today's word, the player's mistakes (kept apart
+// from the topics, since it's a study list rather than a quiz), and the topic
+// picker. Picking "All words" mixes every topic. Each topic shows the
+// player's best score, if any.
+function CategoryScreen({ onSelect, onShowMistakes }) {
   const [topics, setTopics] = useState(null);
   const [wordOfDay, setWordOfDay] = useState(null);
   const [loadError, setLoadError] = useState(false);
@@ -27,6 +28,9 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
     fetchWordOfTheDay()
       .then(setWordOfDay)
       .catch(() => {});
+    fetchWordList()
+      .then((words) => setMistakeCount(pruneMistakes(words.map((w) => w.english)).length))
+      .catch(() => {});
   };
 
   useEffect(load, []);
@@ -34,13 +38,6 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
   const bestScore = (category) => {
     const best = getBestScore(category);
     return best ? `Best ${best.score}/${best.total}` : "Not tried yet";
-  };
-
-  const handleClearMistakes = () => {
-    if (window.confirm("Clear your saved mistake list?")) {
-      clearMistakes();
-      setMistakeCount(0);
-    }
   };
 
   const totalWords = topics ? topics.reduce((sum, t) => sum + t.word_count, 0) : 0;
@@ -61,27 +58,45 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
         <Rangoli />
       </section>
 
-      {wordOfDay && (
-        <section className="word-of-day" aria-label="Word of the day">
-          <p className="label">Word of the day</p>
-          <div className="wod-body">
-            <span className="wod-hindi" lang="hi">
-              {wordOfDay.hindi}
-            </span>
-            <button
-              className="speak-button"
-              onClick={() => speakHindi(wordOfDay.hindi)}
-              aria-label={`Hear how ${wordOfDay.hindi} is pronounced`}
-            >
-              <SpeakerIcon />
-            </button>
-          </div>
-          <p className="wod-roman">{wordOfDay.roman}</p>
-          <p className="wod-english">
-            “{wordOfDay.english}” · {wordOfDay.category}
-          </p>
+      <div className="home-cards">
+        {wordOfDay && (
+          <section className="word-of-day" aria-label="Word of the day">
+            <p className="label">Word of the day</p>
+            <div className="wod-body">
+              <span className="wod-hindi" lang="hi">
+                {wordOfDay.hindi}
+              </span>
+              <button
+                className="speak-button"
+                onClick={() => speakHindi(wordOfDay.hindi)}
+                aria-label={`Hear how ${wordOfDay.hindi} is pronounced`}
+              >
+                <SpeakerIcon />
+              </button>
+            </div>
+            <p className="wod-roman">{wordOfDay.roman}</p>
+            <p className="wod-english">
+              “{wordOfDay.english}” · {wordOfDay.category}
+            </p>
+          </section>
+        )}
+
+        <section className="mistakes-card" aria-label="Your mistakes">
+          <p className="label">Your mistakes</p>
+          {mistakeCount > 0 ? (
+            <>
+              <p className="mistakes-count">
+                {mistakeCount} <span>word{mistakeCount === 1 ? "" : "s"} to go over</span>
+              </p>
+              <button className="secondary-button" onClick={onShowMistakes}>
+                See the list
+              </button>
+            </>
+          ) : (
+            <p className="muted mistakes-empty">Words you get wrong in a round will be listed here, with the right answer.</p>
+          )}
         </section>
-      )}
+      </div>
 
       <section className="topics">
         <h2 className="section-title">Pick a topic</h2>
@@ -105,17 +120,6 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
                 {totalWords} words · {bestScore(null)}
               </span>
             </button>
-            {mistakeCount > 0 && (
-              <button className="arch arch-review" onClick={onSelectMistakes}>
-                <span className="arch-hindi" lang="hi">
-                  दोहराना
-                </span>
-                <span className="arch-english">Review mistakes</span>
-                <span className="arch-meta">
-                  {mistakeCount} word{mistakeCount === 1 ? "" : "s"} to practise
-                </span>
-              </button>
-            )}
             {topics.map((topic, index) => (
               <button
                 key={topic.name}
@@ -132,11 +136,6 @@ function CategoryScreen({ onSelect, onSelectMistakes }) {
               </button>
             ))}
           </div>
-        )}
-        {mistakeCount > 0 && (
-          <button className="link-button" onClick={handleClearMistakes}>
-            Clear mistake list
-          </button>
         )}
       </section>
     </div>

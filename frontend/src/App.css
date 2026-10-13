@@ -292,14 +292,51 @@ button:disabled {
   animation: spin-in 0.9s ease both;
 }
 
-.word-of-day {
+/* Word of the day and the mistakes card sit side by side under the hero. */
+.home-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
   margin: 28px 0 8px;
+  max-width: 760px;
+}
+
+.mistakes-card {
+  padding: 18px 22px;
+  background: var(--card);
+  border: 2px dashed var(--indigo);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mistakes-count {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--madder);
+}
+
+.mistakes-count span {
+  font-family: var(--body);
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.mistakes-empty {
+  margin: 0;
+  font-size: 14px;
+}
+
+.word-of-day {
   padding: 18px 22px;
   background: var(--card);
   border: 2px solid var(--indigo);
   border-radius: 10px;
   box-shadow: 6px 6px 0 var(--marigold);
-  max-width: 420px;
 }
 
 .wod-body {
@@ -387,15 +424,6 @@ button:disabled {
 .arch-indigo { background: var(--indigo-soft); }
 .arch-plum { background: var(--plum); }
 .arch-all { background: var(--indigo); }
-
-.arch-review {
-  background: var(--marigold);
-  color: var(--indigo);
-}
-
-.arch-review .arch-meta {
-  border-top-color: rgba(28, 33, 64, 0.35);
-}
 
 /* ---------- Setup ---------- */
 
@@ -682,6 +710,27 @@ button:disabled {
   margin-left: auto;
 }
 
+/* ---------- Mistakes list ---------- */
+
+.mistakes-screen {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.mistakes-screen h2 {
+  margin: 0 0 4px;
+}
+
+.mistakes-list {
+  margin-top: 14px;
+}
+
+.mistake-topic {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 /* ---------- Results ---------- */
 
 .results-screen {
@@ -908,6 +957,12 @@ button:disabled {
   }
   .next-button {
     width: 100%;
+  }
+  .home-cards {
+    grid-template-columns: 1fr;
+  }
+  .mistake-topic {
+    display: none;
   }
   .results-top {
     flex-direction: column;

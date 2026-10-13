@@ -125,7 +125,7 @@ function ResultsScreen({ history, elapsedSeconds, bestStreak, onRestart, onRevie
         </button>
         {correctCount < history.length && (
           <button className="secondary-button" onClick={onReviewMistakes}>
-            Review mistakes
+            See your mistakes
           </button>
         )}
         <button className="link-button" onClick={handleCopyResults}>

@@ -10,6 +10,7 @@ const getJson = (path) =>
 
 export const fetchTopics = () => getJson("/topics");
 export const fetchWordOfTheDay = () => getJson("/word-of-the-day");
+export const fetchWordList = () => getJson("/words");
 
 // A question limited to the given words (review mode) or category, if any,
 // skipping words already asked this round (`exclude`).

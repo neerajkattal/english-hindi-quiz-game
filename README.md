@@ -72,7 +72,7 @@ The app will open at http://localhost:3000
 
 ## Topics and high scores
 
-There are 168 words in 11 topics (`backend/data.py`), each topic with a Hindi
+There are 348 words in 11 topics, at least 30 per topic (`backend/data.py`), each topic with a Hindi
 name shown on its card (बाज़ार Market, रसोई Food & Kitchen, त्योहार
 Festivals, and so on); `GET /topics` returns them with word counts. Words are
 grouped into topics on the backend, and the player can focus on
@@ -91,14 +91,15 @@ zero each time a new quiz begins.
 
 ## Review Mistakes
 
-Every time the player answers a word wrong, it's added to a "mistakes" list
-saved in `localStorage`. A "Review Mistakes" topic button appears on the
-topic-selection screen (only when there's at least one saved mistake, with a
-live count), and starting it quizzes the player only on those words — using
-a `?words=` filter on the backend's question endpoint instead of a category
-filter. A word drops out of the mistake list automatically as soon as it's
-answered correctly again, in any mode. A "Clear mistake list" link is also
-shown (with a confirmation prompt) so the player can reset it manually.
+Every time the player answers a word wrong, it's saved in `localStorage`
+along with the answer they picked. The home screen shows a separate "Your
+mistakes" card (apart from the topics) with how many are saved, and the
+results screen links to it too. It opens a study list rather than another
+quiz: each missed word with the correct Hindi, its pronunciation (with a
+speaker button), its topic, and what the player picked instead. A word drops
+off the list as soon as it's answered correctly in any round, and a "Clear
+list" link resets it. Saved words that are no longer in the word list (after
+an update) are dropped automatically, using `GET /words`.
 
 ## Black & White mode
 
